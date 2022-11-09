@@ -5,7 +5,9 @@ import {
     Bar,
     XAxis,
     YAxis,
-    CartesianGrid
+    CartesianGrid,
+    LineChart, 
+    Line
 } from 'recharts';
   
 
@@ -13,18 +15,16 @@ function Chart({ info }) {
 
     let data = [
         {
-            "distancia": 20,
-            "duração": 10,
-            "N de rotas": 2
+            "Distancia(km)": 20.52,
+            "Duração(horas)": 10.22
         }
     ]
 
     if(info != ""){
         data = [
             {
-                "distancia": `${info.routes[0].distance} km`,
-                "duração": `${info.routes[0].duration} horas`,
-                "N de rotas": `${info.routes.length}`
+                "Distancia(km)": `${info.routes[0].distance}`,
+                "Duração(horas)": `${info.routes[0].duration}`
             }
         ]
     }
@@ -39,12 +39,10 @@ function Chart({ info }) {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="distancia" fill="#8884d8" />
-                <Bar dataKey="duração" fill="#82ca9d" />
-                <Bar dataKey="N de rotas" fill="#b7ca82" />
+                <Bar dataKey="Distancia(km)" fill="#212121" />
+                <Bar dataKey="Duração(horas)" fill="#F4A460" />
               </BarChart>
             </ResponsiveContainer>
-            {/* {info} */}
         </>
     );
 }

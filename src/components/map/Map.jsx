@@ -11,19 +11,17 @@ function Map() {
   const [locations, setLocations] = useState([]);
   const [source, setSource] = useState([]);
   const [destination, setDestination] = useState([]);
-
-
-  const [teste, setTeste] = useState([]);
+  const [dataChart, setDataChart] = useState([]);
 
   function MyComponent() {
     const map = useMapEvents({
-      click: (e) => {
+      click: (event) => {
         if(locations.length >= 2){
-          setLocations([e.latlng]);
+          setLocations([event.latlng]);
         } else{
-          setLocations((test) => [...test , e.latlng]);
+          setLocations((value) => [...value , event.latlng]);
         }
-        map.flyTo(e.latlng, map.getZoom());
+        map.flyTo(event.latlng, map.getZoom());
       }
     })
     return null
@@ -38,16 +36,20 @@ function Map() {
 
  
   useEffect(() => {
-
-    api.get(`${source[0]},${source[1]};${destination[0]},${destination[1]}?key=pk.a6364d20957b04aac85c76e812c5cff0&steps=true&alternatives=true&geometries=polyline&overview=full`)
-      .then(({ data }) => setTeste(data))
-      .catch((error) => console.log(error));
+    if(destination.length === 0){
+      return;
+    } else{
+      api.get(`${source[0]},${source[1]};${destination[0]},${destination[1]}?key=pk.a6364d20957b04aac85c76e812c5cff0&steps=true&alternatives=true&geometries=polyline&overview=full`)
+        .then(({ data }) => setDataChart(data))
+        .catch((error) => console.log(error));
+    }
   }, [destination]);
 
   const limeOptions = { color: 'black' }
 
   return (
     <div className="wrapper">
+      Escolha um ponto de partida e um destino
       <MapContainer center={[-3.721413683872664, -38.510599136352546]} zoom={3} scrollWheelZoom={true} dragging={true}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -58,7 +60,7 @@ function Map() {
           source.length > 0 && (
             <Marker position={[source[0], source[1]]}>
               <Popup>
-                A pretty CSS3 popup. <br /> Easily customizable.
+                Ponto de partida
               </Popup>
             </Marker>
           )
@@ -68,7 +70,7 @@ function Map() {
           destination.length > 0 && (
             <Marker position={[destination[0], destination[1]]}>
               <Popup>
-                A pretty CSS3 popup. <br /> Easily customizable.
+                Destino
               </Popup>
             </Marker>
           )
@@ -81,7 +83,7 @@ function Map() {
       
 
       <Chart
-        info={teste}
+        info={dataChart}
       />
 
     </div>
