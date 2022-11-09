@@ -8,9 +8,28 @@ import {
     CartesianGrid
 } from 'recharts';
   
-import { data } from '../data';
 
-function Chart() {
+function Chart({ info }) {
+
+    let data = [
+        {
+            "distancia": 20,
+            "duração": 10,
+            "N de rotas": 2
+        }
+    ]
+
+    if(info != ""){
+        data = [
+            {
+                "distancia": `${info.routes[0].distance} km`,
+                "duração": `${info.routes[0].duration} horas`,
+                "N de rotas": `${info.routes.length}`
+            }
+        ]
+    }
+
+    
     return (
         <>
             <ResponsiveContainer width="100%" height={300}>
@@ -20,12 +39,12 @@ function Chart() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="Nenhum filho" fill="#8884d8" />
-                <Bar dataKey="1 filhos" fill="#82c6ca" />
-                <Bar dataKey="2 filhos" fill="#82ca9d" />
-                <Bar dataKey="mais de 2 filhos" fill="#b7ca82" />
+                <Bar dataKey="distancia" fill="#8884d8" />
+                <Bar dataKey="duração" fill="#82ca9d" />
+                <Bar dataKey="N de rotas" fill="#b7ca82" />
               </BarChart>
             </ResponsiveContainer>
+            {/* {info} */}
         </>
     );
 }
