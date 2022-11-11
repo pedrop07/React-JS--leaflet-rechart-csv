@@ -4,3 +4,11 @@
     margin: 0px;
     font-family: 'Poppins', sans-serif;
 }
+
+#spinner{
+    position: absolute;
+    z-index: 99999;
+    height: 100px;
+    top: 70%;
+    left: 50%;
+}

@@ -7,11 +7,11 @@ import Chart from "../charts";
 import "./map.css";
 
 function Map() {
-
   const [locations, setLocations] = useState([]);
   const [source, setSource] = useState([]);
   const [destination, setDestination] = useState([]);
   const [dataChart, setDataChart] = useState([]);
+  const [spinner, setSpinner] = useState(false);
 
   function MapControl() {
     const map = useMapEvents({
@@ -35,9 +35,10 @@ function Map() {
 
   useEffect(() => {
     if(destination.length != 0){
+      setSpinner(true);
       api.get(`${source[0]},${source[1]};${destination[0]},${destination[1]}?key=pk.a6364d20957b04aac85c76e812c5cff0&steps=true&alternatives=true&geometries=polyline&overview=full`)
-        .then(({ data }) => setDataChart(data))
-        .catch((error) => console.log(error));
+        .then(({ data }) => {setSpinner(false); setDataChart(data)})
+        .catch((error) => {setSpinner(false); console.log(error)});
     }
   }, [destination]);
 
@@ -46,10 +47,18 @@ function Map() {
   return (
     <div className="wrapper">
       Escolha um ponto de partida e um destino
+
+      {
+        spinner && (
+            <img src="src/assets/images/Spinner.gif" alt="Loader" id="spinner" />
+        )
+      }
+
       <MapContainer
         center={[55.6516, -4.0155]}
         zoom={3}
         minZoom={2}
+        maxZoom={4}
         scrollWheelZoom={true}
         dragging={true}
       >
