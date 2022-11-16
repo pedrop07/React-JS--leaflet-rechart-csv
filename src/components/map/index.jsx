@@ -46,7 +46,9 @@ function Map() {
 
   return (
     <div className="wrapper">
-      Escolha um ponto de partida e um destino
+      <h1>
+        Escolha um ponto de partida e um destino
+      </h1>
 
       {
         spinner && (
@@ -92,9 +94,7 @@ function Map() {
         <MapControl />
       </MapContainer>
 
-      <Chart
-        dataChart={dataChart}
-      />
+      <Chart />
 
     </div>
   )

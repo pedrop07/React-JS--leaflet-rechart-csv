@@ -5,6 +5,10 @@
     font-family: 'Poppins', sans-serif;
 }
 
+body{
+    background-color: #0a2746;;
+}
+
 #spinner{
     position: absolute;
     z-index: 99999;
