@@ -1,90 +1,88 @@
 import React, { useEffect, useState } from "react";
 import {
-    BarChart,
-    ResponsiveContainer,
-    Legend, Tooltip,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
+	BarChart,
+	ResponsiveContainer,
+	Legend, Tooltip,
+	Bar,
+	XAxis,
+	YAxis,
+	CartesianGrid,
 } from 'recharts';
-import './index.css'
+import './charts.css'
 
-function Chart() {
+export function Chart() {
 
-    const [dataChart, setDataChart] = useState([]);
-    // const [csv, setCsv] = useState();
-  
-    function csvToArray(str, delimiter = ",") {
-        const headers = str.slice(0, str.indexOf("\n")).trim().split(delimiter);
-        const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+	const [dataChart, setDataChart] = useState([]);
+	// const [csv, setCsv] = useState();
 
-        const arr = rows.map(function (row) {
-            const values = row.trim().split(delimiter);
-            const el = headers.reduce(function (object, header, index) {
-                object[header] = values[index];
-                return object;
-            }, {});
+	function csvToArray(str, delimiter = ",") {
+		const headers = str.slice(0, str.indexOf("\n")).trim().split(delimiter);
+		const rows = str.slice(str.indexOf("\n") + 1).split("\n");
 
-            return el;
-        });
-    
-        return arr;
-    }
+		const arr = rows.map(function (row) {
+			const values = row.trim().split(delimiter);
+			const el = headers.reduce(function (object, header, index) {
+				object[header] = values[index];
+				return object;
+			}, {});
 
-    function arrayToCsv(){
-        const titleKeys = Object.keys(dataChart[0]);
-        const refinedData = [];
-        refinedData.push(titleKeys);
+			return el;
+		});
 
-        dataChart.forEach(item => {
-            refinedData.push(Object.values(item));
-        })
-        return refinedData.join('\n');
-    }
+		return arr;
+	}
 
-    useEffect(() => {
-        fetch(`/test.csv`, {
-            method: "GET",
-            headers: {
-            'content-type': 'text/csv;charset=UTF-8'
-            }
-        })
-            .then(res => res.text())
-            .then(data => {
-                // setCsv("data:text/csv;charset=utf-8,"+data);
-                setDataChart(csvToArray(data));
-            })
-    }, []);
-    
-    function exportCsv(){
-        const csv = arrayToCsv();
-        const uri = "data:text/csv;charset=utf-8," + csv;
-        var encodedUri = encodeURI(uri);
-        window.open(encodedUri);
-    };
+	function arrayToCsv() {
+		const titleKeys = Object.keys(dataChart[0]);
+		const refinedData = [];
+		refinedData.push(titleKeys);
 
-    return (
-        <>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={dataChart}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="year" />
-                <YAxis />
-                <Tooltip />
-                <Legend payload={[{value: 'População do Brasil'}]} />
-                <Bar
-                    dataKey="population"
-                    fill="#212121"
-                />
-              </BarChart>
-            </ResponsiveContainer>
+		dataChart.forEach(item => {
+			refinedData.push(Object.values(item));
+		})
+		return refinedData.join('\n');
+	}
 
-            <button onClick={exportCsv}>
-                Extrair como csv
-            </button>
-        </>
-    );
+	useEffect(() => {
+		fetch(`/test.csv`, {
+			method: "GET",
+			headers: {
+				'content-type': 'text/csv;charset=UTF-8'
+			}
+		})
+			.then(res => res.text())
+			.then(data => {
+				// setCsv("data:text/csv;charset=utf-8,"+data);
+				setDataChart(csvToArray(data));
+			})
+	}, []);
+
+	function exportCsv() {
+		const csv = arrayToCsv();
+		const uri = "data:text/csv;charset=utf-8," + csv;
+		var encodedUri = encodeURI(uri);
+		window.open(encodedUri);
+	};
+
+	return (
+		<>
+			<ResponsiveContainer width="100%" height={300}>
+				<BarChart data={dataChart}>
+					<CartesianGrid strokeDasharray="3 3" />
+					<XAxis dataKey="year" />
+					<YAxis />
+					<Tooltip />
+					<Legend payload={[{ value: 'População do Brasil' }]} />
+					<Bar
+						dataKey="population"
+						fill="#212121"
+					/>
+				</BarChart>
+			</ResponsiveContainer>
+
+			<button onClick={exportCsv}>
+				Extrair como csv
+			</button>
+		</>
+	);
 }
-  
-export default Chart;

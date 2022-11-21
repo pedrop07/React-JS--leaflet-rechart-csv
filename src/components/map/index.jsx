@@ -1,44 +1,43 @@
-import { MapContainer, Marker, Popup, TileLayer, Polyline } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import { useMapEvents } from 'react-leaflet/hooks';
 import { useState, useEffect } from 'react';
+import { 
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  Polyline 
+} from "react-leaflet";
+import { useMapEvents } from 'react-leaflet/hooks';
+import { Chart } from "../Charts";
 import api from "../../services/api";
-import Chart from "../charts";
+import "leaflet/dist/leaflet.css";
 import "./map.css";
 
-function Map() {
+export function Map() {
   const [locations, setLocations] = useState([]);
-  const [source, setSource] = useState([]);
-  const [destination, setDestination] = useState([]);
   const [dataChart, setDataChart] = useState([]);
-  const [spinner, setSpinner] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   function MapControl() {
-    const map = useMapEvents({
+    useMapEvents({
       click: (event) => {
         if(locations.length >= 2){
           setLocations([event.latlng]);
         } else{
-          setLocations((value) => [...value , event.latlng]);
+          setLocations((state) => [...state , event.latlng]);
         }
       }
     })
-    return null;
   }
 
-  useEffect(() => {
-    if(locations.length > 0){
-        setSource([locations[0].lat, locations[0].lng]);
-        locations.length > 1 ? setDestination([locations[1].lat, locations[1].lng]) : setDestination([]);
-    }
-  }, [locations]);
+  const source = locations[0]
+  const destination = locations[1]
 
   useEffect(() => {
-    if(destination.length != 0){
-      setSpinner(true);
-      api.get(`${source[0]},${source[1]};${destination[0]},${destination[1]}?key=pk.a6364d20957b04aac85c76e812c5cff0&steps=true&alternatives=true&geometries=polyline&overview=full`)
-        .then(({ data }) => {setSpinner(false); setDataChart(data)})
-        .catch((error) => {setSpinner(false); console.log(error)});
+    if(destination){
+      setIsLoading(true);
+      api.get(`${source.lat},${source.lng};${destination.lat},${destination.lng}?key=pk.a6364d20957b04aac85c76e812c5cff0&steps=true&alternatives=true&geometries=polyline&overview=full`)
+        .then(({ data }) => {setIsLoading(false); setDataChart(data)})
+        .catch((error) => {setIsLoading(false); console.log(error)});
     }
   }, [destination]);
 
@@ -51,8 +50,8 @@ function Map() {
       </h1>
 
       {
-        spinner && (
-            <img src="src/assets/images/Spinner.gif" alt="Loader" id="spinner" />
+        isLoading && (
+          <img src="src/assets/images/Spinner.gif" alt="Loader" id="spinner" />
         )
       }
 
@@ -70,18 +69,18 @@ function Map() {
         />
 
         { 
-          source.length > 0 && (
-            <Marker position={[source[0], source[1]]}>
+          source && (
+            <Marker position={[source.lat, source.lng]}>
               <Popup>
                 Ponto de partida
               </Popup>
             </Marker>
           )
         }
-        
+
         { 
-          destination.length > 0 && (
-            <Marker position={[destination[0], destination[1]]}>
+          destination && (
+            <Marker position={[destination.lat, destination.lng]}>
               <Popup>
                 Destino
               </Popup>
@@ -99,5 +98,3 @@ function Map() {
     </div>
   )
 }
-
-export default Map;
